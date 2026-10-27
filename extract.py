@@ -32,14 +32,14 @@ class Extractor:
 
         HINT: pandas has pd.read_csv(path).  Path has .exists().
         """
-        if not self._exists():
+        if Path.exists(self._path) == False:
             raise FileNotFoundError(self._path)
 
         df = pd.read_csv(self._path)
         self._df = df
         return self._df
-        raise NotImplementedError("TODO(STUDENT): implement Extractor.read()")
     # ---------------- private helper (already written) ----------------
     def _exists(self):
         """Private helper: True if the input file is really there."""
         return self._path.exists()
+
