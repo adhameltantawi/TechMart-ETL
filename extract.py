@@ -23,17 +23,22 @@ class Extractor:
     # ---------------- public method (you complete this) ----------------
     def read(self):
         """Read the CSV at self._path and return the DataFrame.
-
+        
         Steps to write:
           1. If the file is missing, raise FileNotFoundError(self._path).
           2. Read it with pandas:  df = pd.read_csv(self._path)
           3. Store it:            self._df = df
-          4. Return it:           return self._df
+          4. Return it:           return se   lf._df
 
         HINT: pandas has pd.read_csv(path).  Path has .exists().
         """
-        raise NotImplementedError("TODO(STUDENT): implement Extractor.read()")
+        if not self._exists():
+            raise FileNotFoundError(self._path)
 
+        df = pd.read_csv(self._path)
+        self._df = df
+        return self._df
+        raise NotImplementedError("TODO(STUDENT): implement Extractor.read()")
     # ---------------- private helper (already written) ----------------
     def _exists(self):
         """Private helper: True if the input file is really there."""
