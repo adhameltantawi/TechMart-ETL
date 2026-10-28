@@ -47,7 +47,7 @@ class Transformer:
 
 
     def parse_amount(text):
-      text = text.strip()
+      text = str(text).strip()
       text = re.sub(r"[A-Za-z]","",text)
       if not re.fullmatch(r"[\d,]+(\.\d+)?", text):
           return None
@@ -68,8 +68,12 @@ class Transformer:
 
         HINT: re.fullmatch(r"[\\d,]+(\\.\\d+)?", rest)
               Use .map() to clean the column, then .dropna(subset=["amount"]).
-        """
-        raise NotImplementedError("TODO(STUDENT): implement Transformer._clean_amount()")
+      """
+        before = len(self._df)
+        self._df["amount"] = self._df["amount"].map(self.parse_amount)
+        self._df = self._df.dropna(subset='amount').copy()
+        after = len(self._df)
+        self._log.info("clean_amount: %d -> %d", before,after)
 
     def _clean_dates(self):
         """Turn `order_date` into real datetimes. Keep NaT for unreadable ones.
@@ -90,8 +94,29 @@ class Transformer:
 
         HINT: pd.to_datetime(..., format="mixed", errors="coerce")
         """
-        raise NotImplementedError("TODO(STUDENT): implement Transformer._clean_dates()")
+        col = self._df['order_date'].astype("string").str.strip()
+        numeric = pd.to_numeric(col, errors="coerce")
 
+        mask = numeric.between(20000,60000)
+        col.loc[mask] = (
+            pd.to_datetime(
+                numeric.loc[mask],
+                unit = "D",
+                origin = "1899-12-30",
+            ).dt.strftime("%Y-%m-%d")
+        )
+        mask_compact = col.str.fullmatch(r"\d{8}", na=False)
+        col.loc[mask_compact] = (
+            col.loc[mask_compact].str[:4] 
+            + "-" 
+            + col.loc[mask_compact].str[4:6] 
+            + "-" 
+            + col.loc[mask_compact].str[6:]
+        )
+
+        self._df["order_date"] = pd.to_datetime(col,format = "mixed",dayfirst=True, errors="coerce")
+        self._log.info("clean_dates: %d -> %d", len(self._df), self._df["order_date"].isna().sum())
+                
     def _clean_keys(self):
         """Normalise `city` and fill missing `customer_id` with "GUEST".
 
