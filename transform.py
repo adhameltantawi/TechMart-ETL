@@ -17,7 +17,7 @@ import pandas as pd
 class Transformer:
     """Clean the raw DataFrame. DataFrame in, DataFrame out."""
 
-    def __init__(self, df, log):
+    def __init__(self, df: pd.DataFrame, log: Logger):
         # GIVEN: the constructor stores the working table and the logger.
         self._df = df        # private attribute
         self._log = log      # private attribute
@@ -40,7 +40,20 @@ class Transformer:
               Then .copy() so pandas stops warning about a view.
               Log with self._log.info("dedupe: %d -> %d", before, after).
         """
-        raise NotImplementedError("TODO(STUDENT): implement Transformer._dedupe()")
+        before = len(self._df)
+        self._df = self._df.drop_duplicates(subset=["order_id"], keep="first")
+        after = len(self._df)
+        self._log.info("dedupe: %d -> %d", before,after)
+
+
+    def parse_amount(text):
+      text = text.strip()
+      text = re.sub(r"[A-Za-z]","",text)
+      if not re.fullmatch(r"[\d,]+(\.\d+)?", text):
+          return None
+
+      return float(text.replace(",", "")) 
+
 
     def _clean_amount(self):
         """Make `amount` a number and drop rows whose amount is unreadable.
