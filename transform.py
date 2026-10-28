@@ -46,6 +46,7 @@ class Transformer:
         self._log.info("dedupe: %d -> %d", before,after)
 
 
+    @staticmethod
     def parse_amount(text):
       text = str(text).strip()
       text = re.sub(r"[A-Za-z]","",text)
