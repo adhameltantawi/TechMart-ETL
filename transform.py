@@ -115,8 +115,8 @@ class Transformer:
         )
 
         self._df["order_date"] = pd.to_datetime(col,format = "mixed",dayfirst=True, errors="coerce")
-        self._log.info("clean_dates: %d -> %d", len(self._df), self._df["order_date"].isna().sum())
-                
+        self._log.info("dates: %d unreadable kept as NaT",self._df["order_date"].isna().sum())
+
     def _clean_keys(self):
         """Normalise `city` and fill missing `customer_id` with "GUEST".
 
