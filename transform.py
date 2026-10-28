@@ -54,7 +54,6 @@ class Transformer:
 
       return float(text.replace(",", "")) 
 
-
     def _clean_amount(self):
         """Make `amount` a number and drop rows whose amount is unreadable.
 
