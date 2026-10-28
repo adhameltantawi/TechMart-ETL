@@ -122,4 +122,5 @@ class Transformer:
 
         HINT: .str.strip().str.title()   and   .fillna("GUEST")
         """
-        raise NotImplementedError("TODO(STUDENT): implement Transformer._clean_keys()")
+        self._df["city"] = self._df["city"].str.strip().str.title()
+        self._df["customer_id"] = self._df["customer_id"].fillna("GUEST")
